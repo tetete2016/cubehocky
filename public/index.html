@@ -12,7 +12,9 @@
             var canvas = document.getElementById('canvas'),
                     ctx = canvas.getContext('2d');
             var size = 0;
-            var x = 0, y = 0, z = 0;
+            var x = 9, y = 40, z = 20;
+            var vx = 1, vy = 1, vz = 1;
+            var cx = 0, cy = 0;
             // resize the canvas to fill browser window dynamically
             window.addEventListener('resize', resizeCanvas, false);
 
@@ -29,8 +31,28 @@
                 document.body.style.margin = "0px";
             }
             function timer() {
+                var x1 = x, y1 = y, z1 = z;
+                x1 += vx;
+                y1 += vy;
+                z1 += vz;
+                if (x1 < 0 || x1 > 100) {
+                    vx *= -1;
+                } else {
+                    x = x1;
+                }
+                if (y1 < 0 || y1 > 100) {
+                    vy *= -1;
+                } else {
+                    y = y1;
+                }
+                if (z1 < 0 || z1 > 100) {
+                    vz *= -1;
+                } else {
+                    z = z1;
+                }
                 drawbg();
                 drawball();
+                drawcursor();
             }
             function drawbg() {
                 ctx.fillStyle = "rgb(255,255,255)";
@@ -63,9 +85,28 @@
                 ctx.stroke();
             }
             function drawball() {
+                ctx.fillStyle = "rgb(0,0,0)";
                 ctx.beginPath();
-                ctx.arc(x * size, y * size, size, 0, Math.PI * 2);
+                ctx.arc(x * size * 0.6 + z * size * 0.2, size * 80 - y * size * 0.6 - z * size * 0.2, size, 0, Math.PI * 2);
                 ctx.fill();
+
+                ctx.fillStyle = "rgb(200,200,200)";
+                ctx.save();
+                ctx.translate(x * size * 0.6 + z * size * 0.2, size * 80 - z * size * 0.2);
+                ctx.scale(1, 0.5);
+                ctx.beginPath();
+                ctx.arc(0, 0, size, 0, Math.PI * 2);
+                ctx.restore();
+                ctx.fill();
+            }
+            function drawcursor() {
+                ctx.fillStyle = "rgb(0,255,0)";
+                ctx.fillRect(cx * size, cy * size + size * 20, size * 10, size * 10);
+            }
+            window.onmousemove = function (e) {
+                cx = e.clientX / size * 100;
+                cy = e.clientY / size * 100;
+                console.log(cx);
             }
             resizeCanvas();
             setInterval(timer, 30);
