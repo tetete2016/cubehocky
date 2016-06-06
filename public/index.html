@@ -172,6 +172,7 @@
                 event.preventDefault();
             }
             function ontouch() {
+                start = true;
                 e = event.touches[0];
                 cx = e.clientX / size / 0.6 - 10;
                 cy = (size * 65 - e.clientY) / size / 0.6;
